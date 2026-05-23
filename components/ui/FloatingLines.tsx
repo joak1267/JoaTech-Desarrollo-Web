@@ -360,6 +360,16 @@ export default function FloatingLines({
   const bottomWaveRotate = bottomWavePosition?.rotate ?? -1.0;
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileBreakpoint = window.innerWidth < 768;
+      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      
+      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+        return;
+      }
+    }
+
     if (isLowPerf) return;
 
     const container = containerRef.current;
