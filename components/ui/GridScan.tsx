@@ -336,6 +336,19 @@ export const GridScan: React.FC<GridScanProps> = ({
 
   const [modelsReady, setModelsReady] = useState(false);
   const [uiFaceActive, setUiFaceActive] = useState(false);
+  const [isLowPerf, setIsLowPerf] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileBreakpoint = window.innerWidth < 768;
+      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      
+      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+        setIsLowPerf(true);
+      }
+    }
+  }, []);
 
   const lookTarget = useRef(new THREE.Vector2(0, 0));
   const tiltTarget = useRef(0);
@@ -406,6 +419,8 @@ export const GridScan: React.FC<GridScanProps> = ({
   }, [uiFaceActive, snapBackDelay, scanOnClick]);
 
   useEffect(() => {
+    if (isLowPerf) return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -507,7 +522,25 @@ export const GridScan: React.FC<GridScanProps> = ({
       renderer.dispose();
       container.removeChild(renderer.domElement);
     };
-  }, [sensitivity, lineThickness, linesColor, scanColor, scanOpacity, gridScale, lineStyle, lineJitter, scanDirection, enablePost]);
+  }, [sensitivity, lineThickness, linesColor, scanColor, scanOpacity, gridScale, lineStyle, lineJitter, scanDirection, enablePost, isLowPerf]);
+
+  if (isLowPerf) {
+    return (
+      <div 
+        className={`relative w-full h-full overflow-hidden ${className ?? ''}`} 
+        style={style}
+      >
+        <div 
+          className="absolute inset-0 opacity-10" 
+          style={{
+            backgroundImage: `linear-gradient(to right, #1e1b4b 1px, transparent 1px), linear-gradient(to bottom, #1e1b4b 1px, transparent 1px)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.04)_0%,transparent_70%)]" />
+      </div>
+    );
+  }
 
   return <div ref={containerRef} className={`relative w-full h-full overflow-hidden ${className ?? ''}`} style={style} />;
 };

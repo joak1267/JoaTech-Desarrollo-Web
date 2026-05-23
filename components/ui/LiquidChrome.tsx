@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 
 interface LiquidChromeProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -19,11 +19,25 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
   frequencyX = 3,
   frequencyY = 2,
   interactive = true,
+  className,
+  style,
   ...props
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isLowPerf, setIsLowPerf] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileBreakpoint = window.innerWidth < 768;
+      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      
+      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+        setIsLowPerf(true);
+        return;
+      }
+    }
+
     if (!containerRef.current) return;
 
     const container = containerRef.current;
@@ -181,9 +195,26 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [baseColor, speed, amplitude, frequencyX, frequencyY, interactive]);
+  }, [baseColor, speed, amplitude, frequencyX, frequencyY, interactive, isLowPerf]);
 
-  return <div ref={containerRef} className="w-full h-full" {...props} />;
+  if (isLowPerf) {
+    return (
+      <div 
+        className={`w-full h-full bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 relative overflow-hidden pointer-events-none ${className || ''}`}
+        style={style}
+        {...props}
+      >
+        <div 
+          className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
+    );
+  }
+
+  return <div ref={containerRef} className="w-full h-full" style={style} {...props} />;
 };
 
 export default LiquidChrome;

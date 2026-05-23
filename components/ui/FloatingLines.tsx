@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Scene,
   OrthographicCamera,
@@ -291,6 +291,19 @@ export default function FloatingLines({
   mixBlendMode = 'screen'
 }: FloatingLinesProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isLowPerf, setIsLowPerf] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileBreakpoint = window.innerWidth < 768;
+      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      
+      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+        setIsLowPerf(true);
+      }
+    }
+  }, []);
   const targetMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
   const currentMouseRef = useRef<Vector2>(new Vector2(-1000, -1000));
   const targetInfluenceRef = useRef<number>(0);
@@ -347,6 +360,8 @@ export default function FloatingLines({
   const bottomWaveRotate = bottomWavePosition?.rotate ?? -1.0;
 
   useEffect(() => {
+    if (isLowPerf) return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -536,8 +551,18 @@ export default function FloatingLines({
         renderer.domElement.parentElement.removeChild(renderer.domElement);
       }
     };
-  }, [
-  ]);
+  }, [isLowPerf]);
+
+  if (isLowPerf) {
+    return (
+      <div
+        className="relative w-full h-full overflow-hidden bg-[#0b0a0d]"
+        style={{ position: 'relative' }}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,75,192,0.12)_0%,transparent_70%)]" />
+      </div>
+    );
+  }
 
   return (
     <div

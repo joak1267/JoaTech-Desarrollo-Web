@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 export interface LiquidEtherProps {
@@ -80,8 +82,20 @@ export default function LiquidEther({
   const rafRef = useRef<number | null>(null);
   const intersectionObserverRef = useRef<IntersectionObserver | null>(null);
   const isVisibleRef = useRef<boolean>(true);
+  const [isLowPerf, setIsLowPerf] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileBreakpoint = window.innerWidth < 768;
+      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      
+      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+        setIsLowPerf(true);
+        return;
+      }
+    }
+
     if (!mountRef.current) return;
 
     function makePaletteTexture(stops: string[]): THREE.DataTexture {
@@ -456,7 +470,7 @@ export default function LiquidEther({
       if (rafRef.current) cancelAnimationFrame(rafRef.current); if (intersectionObserverRef.current) { try { intersectionObserverRef.current.disconnect(); } catch {} }
       if (webglRef.current) webglRef.current.dispose(); webglRef.current = null;
     };
-  }, [BFECC, cursorSize, dt, isBounce, isViscous, iterationsPoisson, iterationsViscous, mouseForce, resolution, viscous, colors, autoDemo, autoSpeed, autoIntensity, takeoverDuration, autoResumeDelay, autoRampDuration]);
+  }, [BFECC, cursorSize, dt, isBounce, isViscous, iterationsPoisson, iterationsViscous, mouseForce, resolution, viscous, colors, autoDemo, autoSpeed, autoIntensity, takeoverDuration, autoResumeDelay, autoRampDuration, isLowPerf]);
 
   useEffect(() => {
     const webgl = webglRef.current; if (!webgl) return; const sim = webgl.output?.simulation; if (!sim) return; const prevRes = sim.options.resolution;
@@ -464,6 +478,22 @@ export default function LiquidEther({
     if (webgl.autoDriver) { webgl.autoDriver.enabled = autoDemo; webgl.autoDriver.speed = autoSpeed; webgl.autoDriver.resumeDelay = autoResumeDelay; webgl.autoDriver.rampDurationMs = autoRampDuration * 1000; if (webgl.autoDriver.mouse) { webgl.autoDriver.mouse.autoIntensity = autoIntensity; webgl.autoDriver.mouse.takeoverDuration = takeoverDuration; } }
     if (resolution !== prevRes) sim.resize();
   }, [mouseForce, cursorSize, isViscous, viscous, iterationsViscous, iterationsPoisson, dt, BFECC, resolution, isBounce, autoDemo, autoSpeed, autoIntensity, takeoverDuration, autoResumeDelay, autoRampDuration]);
+
+  if (isLowPerf) {
+    return (
+      <div 
+        className={`w-full h-full bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 relative overflow-hidden pointer-events-none ${className || ''}`} 
+        style={style}
+      >
+        <div 
+          className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
+    );
+  }
 
   return <div ref={mountRef} className={`w-full h-full relative overflow-hidden pointer-events-none touch-none ${className || ''}`} style={style} />;
 }
