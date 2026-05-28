@@ -125,8 +125,13 @@ export default function Navbar({ onQuoteClick }: NavbarProps) {
             onClick={(e) => handleNavClick(e, 'inicio')}
             className="flex items-center gap-2.5 group cursor-pointer"
           >
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-[#00F2FE] via-[#2F4BC0] to-[#E945F5] flex items-center justify-center font-bold text-white shadow-md shadow-[#00F2FE]/10 group-hover:shadow-[#00F2FE]/30 transition-all duration-300 group-hover:scale-105">
-              J
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full overflow-hidden border border-[#00F2FE]/25 bg-black/50 shadow-md shadow-[#00F2FE]/10 group-hover:shadow-[#00F2FE]/30 transition-all duration-300 group-hover:scale-105 relative">
+              <img
+                src="/joatech_icon.png"
+                alt="JoaTech Icon"
+                className="absolute top-[57%] left-[53%] -translate-x-1/2 -translate-y-1/2 h-[135%] w-[135%] object-contain max-w-none"
+                style={{ mixBlendMode: 'screen' }}
+              />
             </div>
             <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-transparent group-hover:from-white group-hover:to-[#00F2FE] transition-all duration-300">
               JoaTech

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import ShinyText from '@/components/ui/ShinyText';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 const FloatingLines = dynamic(() => import('@/components/ui/FloatingLines'), { ssr: false });
 
@@ -23,6 +24,7 @@ export default function Hero({
   subtitle = "Creamos experiencias digitales premium, interactivas y optimizadas para potenciar tu marca. Integrando tecnologías de vanguardia para interfaces que marcan la diferencia."
 }: HeroProps) {
   const [wordIndex, setWordIndex] = useState(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,15 +37,19 @@ export default function Hero({
     <section id="inicio" className="relative min-h-[90vh] flex flex-col justify-center items-center bg-neutral-950 px-6 py-24 overflow-hidden select-none">
       {/* 1. Fondo Animado Interactivo FloatingLines */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none bg-[#0b0a0d]">
-        <FloatingLines
-          linesGradient={LINES_GRADIENT}
-          animationSpeed={0.4}
-          lineCount={LINE_COUNT}
-          lineDistance={LINE_DISTANCE}
-          bendRadius={5.0}
-          bendStrength={-0.8}
-          mouseDamping={0.06}
-        />
+        {!isMobile ? (
+          <FloatingLines
+            linesGradient={LINES_GRADIENT}
+            animationSpeed={0.4}
+            lineCount={LINE_COUNT}
+            lineDistance={LINE_DISTANCE}
+            bendRadius={5.0}
+            bendStrength={-0.8}
+            mouseDamping={0.06}
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,75,192,0.12)_0%,transparent_70%)]" />
+        )}
       </div>
 
       {/* 2. Spot de luz degradado detrás del título */}

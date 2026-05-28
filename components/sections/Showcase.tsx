@@ -3,7 +3,10 @@
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
-import GridScan from "@/components/ui/GridScan";
+import dynamic from 'next/dynamic';
+import { useIsMobile } from '@/hooks/useIsMobile';
+
+const GridScan = dynamic(() => import("@/components/ui/GridScan"), { ssr: false });
 import { 
   FileText, 
   ShoppingBag, 
@@ -99,6 +102,7 @@ const cardVariants: Variants = {
 };
 
 export default function Showcase() {
+  const isMobile = useIsMobile();
   // Renderizar la vista previa de la maqueta abstracta de cada categoría
   const renderCategoryPreview = (id: string) => {
     switch (id) {
@@ -240,24 +244,37 @@ export default function Showcase() {
       
       {/* Fondo Holográfico 3D GridScan */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40">
-        <GridScan
-          sensitivity={0.5}
-          lineThickness={1}
-          linesColor="#1e1b4b"
-          gridScale={0.08}
-          scanColor="#a855f7"
-          scanOpacity={0.25}
-          lineStyle="solid"
-          lineJitter={0.05}
-          enablePost={true}
-          bloomIntensity={0.5}
-          chromaticAberration={0.001}
-          noiseIntensity={0.008}
-          enableWebcam={false}
-          showPreview={false}
-          scanDuration={3.0}
-          scanDelay={2.0}
-        />
+        {!isMobile ? (
+          <GridScan
+            sensitivity={0.5}
+            lineThickness={1}
+            linesColor="#1e1b4b"
+            gridScale={0.08}
+            scanColor="#a855f7"
+            scanOpacity={0.25}
+            lineStyle="solid"
+            lineJitter={0.05}
+            enablePost={true}
+            bloomIntensity={0.5}
+            chromaticAberration={0.001}
+            noiseIntensity={0.008}
+            enableWebcam={false}
+            showPreview={false}
+            scanDuration={3.0}
+            scanDelay={2.0}
+          />
+        ) : (
+          <div className="relative w-full h-full overflow-hidden">
+            <div 
+              className="absolute inset-0 opacity-10" 
+              style={{
+                backgroundImage: `linear-gradient(to right, #1e1b4b 1px, transparent 1px), linear-gradient(to bottom, #1e1b4b 1px, transparent 1px)`,
+                backgroundSize: '40px 40px',
+              }}
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.04)_0%,transparent_70%)]" />
+          </div>
+        )}
       </div>
       
       {/* 1. Elementos de decoración de fondo / Gradientes Neón */}

@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import LiquidEther from '@/components/ui/LiquidEther';
+import dynamic from 'next/dynamic';
+import { useIsMobile } from '@/hooks/useIsMobile';
+
+const LiquidEther = dynamic(() => import("@/components/ui/LiquidEther"), { ssr: false });
 
 interface FAQItem {
   question: string;
@@ -41,6 +44,7 @@ const ETHER_COLORS = [ '#4c1d95', '#7c3aed', '#1e1b4b' ]; // Tonos Violeta/Índi
 export default function FAQ() {
   // Guardamos el índice del acordeón abierto (null si todos están cerrados)
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const isMobile = useIsMobile();
 
   const toggleAccordion = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -56,15 +60,26 @@ export default function FAQ() {
           WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)' 
         }}
       >
-        <LiquidEther
-          colors={ETHER_COLORS}
-          mouseForce={18}
-          cursorSize={85}
-          resolution={0.4}
-          autoDemo={true}
-          autoSpeed={0.4}
-          autoIntensity={1.8}
-        />
+        {!isMobile ? (
+          <LiquidEther
+            colors={ETHER_COLORS}
+            mouseForce={18}
+            cursorSize={85}
+            resolution={0.4}
+            autoDemo={true}
+            autoSpeed={0.4}
+            autoIntensity={1.8}
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 relative overflow-hidden pointer-events-none">
+            <div 
+              className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Luces de fondo decorativas */}

@@ -5,7 +5,10 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Navbar from '@/components/ui/Navbar';
 import QuoteModal from '@/components/ui/QuoteModal';
-import DarkVeil from './DarkVeil';
+import dynamic from 'next/dynamic';
+import { useIsMobile } from '@/hooks/useIsMobile';
+
+const DarkVeil = dynamic(() => import('./DarkVeil'), { ssr: false });
 import { 
   ArrowLeft, 
   Check, 
@@ -93,6 +96,7 @@ const LANDING_TIERS = [
 
 export default function LandingsPortfolioPage() {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const getTechIcon = (tech: string) => {
     const lower = tech.toLowerCase();
@@ -126,14 +130,16 @@ export default function LandingsPortfolioPage() {
       {/* Fondo de Shader DarkVeil */}
       <div className="fixed inset-0 w-full h-full -z-10 pointer-events-none">
         <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-          <DarkVeil
-            hueShift={0}
-            noiseIntensity={0}
-            scanlineIntensity={0}
-            speed={0.5}
-            scanlineFrequency={0}
-            warpAmount={0}
-          />
+          {!isMobile && (
+            <DarkVeil
+              hueShift={0}
+              noiseIntensity={0}
+              scanlineIntensity={0}
+              speed={0.5}
+              scanlineFrequency={0}
+              warpAmount={0}
+            />
+          )}
         </div>
         {/* Capa de oscurecimiento para legibilidad del texto */}
         <div className="absolute inset-0 bg-[#050406]/75" />

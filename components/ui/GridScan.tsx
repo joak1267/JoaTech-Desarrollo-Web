@@ -1,4 +1,3 @@
-import * as faceapi from 'face-api.js';
 import { BloomEffect, ChromaticAberrationEffect, EffectComposer, EffectPass, RenderPass } from 'postprocessing';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -6,7 +5,6 @@ import * as THREE from 'three';
 type GridScanProps = {
   enableWebcam?: boolean;
   showPreview?: boolean;
-  modelsPath?: string;
   sensitivity?: number;
   lineThickness?: number;
   linesColor?: string;
@@ -298,7 +296,6 @@ void main(){
 export const GridScan: React.FC<GridScanProps> = ({
   enableWebcam = false,
   showPreview = false,
-  modelsPath = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights',
   sensitivity = 0.55,
   lineThickness = 1,
   linesColor = '#2F293A',

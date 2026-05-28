@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Renderer, Program, Mesh, Triangle, Vec2 } from 'ogl';
 
 const vertex = `
@@ -93,7 +93,21 @@ export default function DarkVeil({
   resolutionScale = 1
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const [isLowPerf, setIsLowPerf] = useState(false);
+
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileBreakpoint = window.innerWidth < 768;
+      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+        setIsLowPerf(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLowPerf) return;
     const canvas = ref.current as HTMLCanvasElement;
     if (!canvas) return;
     const parent = canvas.parentElement as HTMLElement;
@@ -155,6 +169,11 @@ export default function DarkVeil({
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
     };
-  }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
+  }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale, isLowPerf]);
+  
+  if (isLowPerf) {
+    return <div className="w-full h-full bg-[#050406]" />;
+  }
+  
   return <canvas ref={ref} className="w-full h-full block" />;
 }
