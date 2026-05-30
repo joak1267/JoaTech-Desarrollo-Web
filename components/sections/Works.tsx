@@ -461,13 +461,7 @@ export default function Works() {
                 </div>
 
                 {/* Footer del Modal (Botones) */}
-                <div className="mt-5 pt-5 border-t border-neutral-900 flex items-center justify-between gap-4">
-                  <button
-                    onClick={() => setSelectedProject(null)}
-                    className="px-6 py-3 rounded-xl text-center text-xs font-black uppercase tracking-widest text-neutral-400 hover:text-white bg-neutral-900 border border-neutral-850 hover:border-neutral-800 transition-colors cursor-pointer"
-                  >
-                    Cerrar
-                  </button>
+                <div className="mt-5 pt-5 border-t border-neutral-900 flex items-center justify-end gap-4">
 
                   {selectedProject.status === 'live' ? (
                     <a
