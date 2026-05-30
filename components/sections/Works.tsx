@@ -474,9 +474,10 @@ export default function Works() {
                       href={selectedProject.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 py-3 rounded-xl text-center text-xs font-black uppercase tracking-widest text-white transition-all duration-300 flex items-center gap-1.5 shadow-lg cursor-pointer"
+                      className="px-6 py-3 rounded-xl text-center text-xs font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-1.5 shadow-lg cursor-pointer"
                       style={{
                         backgroundColor: selectedProject.accentColor,
+                        color: selectedProject.accentColor === '#ffffff' ? '#111111' : '#ffffff',
                         boxShadow: `0 4px 15px ${selectedProject.glowColor}`
                       }}
                       onMouseEnter={(e) => {
