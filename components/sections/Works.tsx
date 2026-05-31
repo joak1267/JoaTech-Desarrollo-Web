@@ -100,7 +100,8 @@ const PROJECTS_DATA: Project[] = [
       'Dashboard interactivo en React para monitorear delays e hilos de ejecución'
     ],
     tech: ['React', 'Electron', 'Python', 'Playwright', 'Excel Pipeline'],
-    status: 'development',
+    status: 'live',
+    demoUrl: 'https://scraping-web-system.vercel.app/',
     accentColor: '#10b981',
     glowColor: 'rgba(16, 185, 129, 0.4)',
     icon: Flame,
