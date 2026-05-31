@@ -1,0 +1,26 @@
+[
+  {
+    "id": "58cgf5x",
+    "type": "contacto",
+    "name": "Test User",
+    "email": "test@example.com",
+    "message": "Hello from automated test",
+    "projectType": null,
+    "budget": null,
+    "timeline": null,
+    "features": null,
+    "createdAt": "2026-05-30T17:26:50.798Z"
+  },
+  {
+    "id": "ce8i7da",
+    "type": "quote",
+    "name": "Quote User",
+    "email": "quote@example.com",
+    "message": null,
+    "projectType": "Web App / SaaS",
+    "budget": "$700 - $1200 USD",
+    "timeline": "1 a 3 meses",
+    "features": "Necesito un SaaS interactivo de telemetria",
+    "createdAt": "2026-05-30T17:26:58.422Z"
+  }
+]

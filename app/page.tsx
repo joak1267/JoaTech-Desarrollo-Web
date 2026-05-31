@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Hero from "@/components/sections/Hero";
 import Showcase from "@/components/sections/Showcase";
+import Works from "@/components/sections/Works";
 import AboutSection from "@/components/ui/AboutSection";
 import Benefits from "@/components/sections/Benefits";
 import Process from "@/components/sections/Process";
@@ -31,6 +32,7 @@ export default function Home() {
       <main className="flex-grow flex flex-col">
         <Hero />
         <Showcase />
+        <Works />
  
         {/* LiquidChrome background wrapping Benefits and Process */}
         <div className="relative overflow-hidden bg-neutral-950">

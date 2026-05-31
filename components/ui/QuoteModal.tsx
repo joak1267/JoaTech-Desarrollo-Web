@@ -169,8 +169,27 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
 
     const whatsappUrl = `https://wa.me/5491124673417?text=${encodeURIComponent(whatsappMessage)}`;
 
-    // Simulación de respuesta de guardado local / API (1.5 segundos)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Registrar en el servidor local/API de respaldo
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          projectType: pType,
+          budget: pBudget,
+          timeline: pTimeline,
+          features: data.features,
+          type: 'quote',
+        }),
+      });
+    } catch (error) {
+      console.error('Error al registrar cotización en backend:', error);
+      // Continuamos de todas formas con WhatsApp para no bloquear la conversión
+    }
 
     // Abrir WhatsApp en una nueva pestaña
     window.open(whatsappUrl, '_blank');

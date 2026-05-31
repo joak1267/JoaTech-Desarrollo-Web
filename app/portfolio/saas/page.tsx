@@ -11,16 +11,93 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 const DarkVeil = dynamic(() => import('../landings/DarkVeil'), { ssr: false });
 import { 
   ArrowLeft, 
-  Cog, 
-  Settings, 
-  Wrench,
-  Construction,
-  MessageCircle
+  Check, 
+  Zap, 
+  Cpu, 
+  Sparkles, 
+  Code2, 
+  Layers,
+  Database,
+  Terminal,
+  Grid,
+  ShieldAlert,
+  Users
 } from 'lucide-react';
+
+const SAAS_TIERS = [
+  {
+    id: 'webapp',
+    title: 'SISTEMAS & WEB APPS DE GESTIÓN',
+    price: '$700 USD',
+    tagline: 'Gestión Interna y Automatización',
+    description: 'Sistemas a medida para administrar reservas, turnos, clientes o facturación. Conectados a bases de datos relacionales rápidas e interfaces de usuario intuitivas para optimizar las operaciones de tu equipo.',
+    features: [
+      'Panel de control interactivo (Dashboard de métricas)',
+      'Sistemas de gestión de turnos/citas interactivo',
+      'Inicio de sesión y autenticación de usuarios (JWT / Supabase)',
+      'Base de datos SQL integrada (PostgreSQL / SQLite)',
+      'Módulo de exportación de reportes (PDF / Excel)',
+      'Diseño responsivo de alta performance'
+    ],
+    tech: ['React', 'Next.js', 'Supabase', 'Tailwind CSS v4'],
+    badge: 'Modelo Gestión',
+    badgeIcon: Zap,
+    badgeColor: 'text-[#60a5fa] border-[#60a5fa]/20 bg-[#60a5fa]/5',
+    accentColor: '#3b82f6',
+    img: '/ecommerce/express_shop.png'
+  },
+  {
+    id: 'saas',
+    title: 'PLATAFORMAS SAAS MULTI-USUARIO',
+    price: '$1200+ USD',
+    tagline: 'Estructuras Robustas y Modelos de Negocio',
+    description: 'Desarrollo de software completo bajo modelo de suscripción. Soporte multi-inquilino (multi-tenant), pasarela de cobro recurrente integrada (Stripe Billing), roles avanzados y escalabilidad elástica en la nube.',
+    features: [
+      'Arquitectura SaaS Multi-Inquilino (Multi-tenant)',
+      'Suscripciones recurrentes integradas con Stripe Billing',
+      'Roles y permisos avanzados (Admin, Staff, Clientes)',
+      'Panel analítico complejo con gráficos en tiempo real',
+      'Configuración e integración de APIs de terceros',
+      'Despliegue serverless de alta disponibilidad global'
+    ],
+    tech: ['Next.js', 'Supabase Auth & DB', 'Stripe Billing', 'TypeScript'],
+    badge: 'Modelo SaaS',
+    badgeIcon: Sparkles,
+    badgeColor: 'text-[#818cf8] border-[#818cf8]/20 bg-[#818cf8]/5',
+    accentColor: '#6366f1',
+    img: '/ecommerce/corporate_shop.png'
+  }
+];
 
 export default function SaasPortfolioPage() {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  const getTechIcon = (tech: string) => {
+    const lower = tech.toLowerCase();
+    if (lower.includes('react')) {
+      return <Code2 className="w-3.5 h-3.5 text-[#61dafb]" />;
+    }
+    if (lower.includes('next.js')) {
+      return <Terminal className="w-3.5 h-3.5 text-white" />;
+    }
+    if (lower.includes('typescript')) {
+      return <Database className="w-3.5 h-3.5 text-[#3178c6]" />;
+    }
+    if (lower.includes('framer motion')) {
+      return <Layers className="w-3.5 h-3.5 text-[#f107a3]" />;
+    }
+    if (lower.includes('tailwind')) {
+      return <Zap className="w-3.5 h-3.5 text-[#3b82f6]" />;
+    }
+    if (lower.includes('stripe')) {
+      return <Cpu className="w-3.5 h-3.5 text-[#635bff]" />;
+    }
+    if (lower.includes('supabase')) {
+      return <Database className="w-3.5 h-3.5 text-[#3ecf8e]" />;
+    }
+    return <Grid className="w-3.5 h-3.5 text-neutral-400" />;
+  };
 
   return (
     <div className="min-h-screen text-neutral-100 flex flex-col justify-between selection:bg-[#2F4BC0] selection:text-white font-sans overflow-hidden relative">
@@ -48,7 +125,7 @@ export default function SaasPortfolioPage() {
 
       <Navbar onQuoteClick={() => setIsQuoteOpen(true)} />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-6 pt-36 pb-24 relative z-10 flex flex-col">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-6 pt-36 pb-24 relative z-10">
         
         {/* Cabecera superior alineada simétricamente */}
         <div className="flex items-center justify-between w-full border-b border-neutral-800/40 pb-6 mb-8 gap-4">
@@ -71,91 +148,125 @@ export default function SaasPortfolioPage() {
 
         {/* Descripción de la Categoría */}
         <p className="text-sm sm:text-base text-white font-normal leading-relaxed max-w-3xl mb-12">
-          Aplicaciones Web y Sistemas de Software a Medida. Desarrollamos soluciones complejas optimizadas para digitalizar tus operaciones: desde gestores de citas inteligentes hasta plataformas multiusuario SaaS con analítica avanzada, suscripciones y bases de datos robustas.
+          Sistemas e infraestructura de software a medida. Diseñamos plataformas orientadas a la optimización de procesos de negocio y productos SaaS escalables, listos para manejar altos volúmenes de usuarios y transacciones seguras.
         </p>
 
-        {/* Bloque de Mantenimiento Centrado */}
-        <div className="flex-grow flex flex-col items-center justify-center text-center space-y-8 py-8">
-          
-          {/* Animación Premium de Engranajes */}
-          <div className="relative w-48 h-48 flex items-center justify-center">
-            {/* Círculo de brillo de fondo */}
-            <div className="absolute w-32 h-32 rounded-full bg-[#2F4BC0]/10 blur-xl animate-pulse" />
+        {/* Listado de Ofertas / Tiers */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {SAAS_TIERS.map((tier) => {
+            const BadgeIcon = tier.badgeIcon;
             
-            {/* Engranaje Principal */}
-            <motion.div
-              className="absolute text-neutral-700"
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-            >
-              <Cog className="w-28 h-28 text-[#2F4BC0]/70 stroke-[1.5]" />
-            </motion.div>
-            
-            {/* Engranaje Secundario (Superior Derecha) */}
-            <motion.div
-              className="absolute top-6 right-6"
-              animate={{ rotate: -360 }}
-              transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-            >
-              <Settings className="w-14 h-14 text-[#00F2FE]/60 stroke-[1.5]" />
-            </motion.div>
+            return (
+              <motion.article
+                key={tier.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="group relative flex flex-col justify-between p-6 sm:p-7 rounded-[2rem] bg-neutral-950/40 border border-neutral-900/80 backdrop-blur-xl transition-all duration-500 hover:border-neutral-800 hover:shadow-3xl overflow-hidden"
+              >
+                {/* Visual Glow Layer en Hover de la tarjeta */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+                  style={{
+                    backgroundImage: `linear-gradient(to bottom, ${tier.accentColor}08, transparent, transparent)`
+                  }}
+                />
 
-            {/* Engranaje Terciario (Inferior Izquierda) */}
-            <motion.div
-              className="absolute bottom-6 left-6"
-              animate={{ rotate: -360 }}
-              transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
-            >
-              <Cog className="w-16 h-16 text-neutral-500/50 stroke-[1.5]" />
-            </motion.div>
+                <div className="space-y-6">
+                  {/* Portada Visual Real */}
+                  <div className="relative h-48 sm:h-52 w-full overflow-hidden rounded-2xl border border-neutral-900 bg-neutral-900">
+                    <div className="w-full h-full bg-gradient-to-br from-neutral-900 to-neutral-950 flex items-center justify-center p-6 text-center">
+                      <Cpu className="w-16 h-16 text-neutral-800 group-hover:scale-110 transition-transform duration-500" style={{ color: `${tier.accentColor}40` }} />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent" />
+                  </div>
 
-            {/* Ícono central de herramienta */}
-            <motion.div
-              className="absolute"
-              animate={{ 
-                y: [0, -4, 0],
-                rotate: [0, 5, 0]
-              }}
-              transition={{ 
-                repeat: Infinity, 
-                duration: 4, 
-                ease: "easeInOut" 
-              }}
-            >
-              <Wrench className="w-8 h-8 text-white drop-shadow-[0_0_10px_rgba(47,75,192,0.5)]" />
-            </motion.div>
-          </div>
+                  {/* Título & Precio */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-wider ${tier.badgeColor}`}>
+                        <BadgeIcon className="w-3.5 h-3.5" />
+                        {tier.badge}
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-mono font-black text-green-600">
+                          {tier.price}
+                        </span>
+                        <span className="text-[9px] uppercase font-bold text-green-700/90 tracking-wider font-sans">
+                          Base
+                        </span>
+                      </div>
+                    </div>
 
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs font-black uppercase tracking-wider text-[#2F4BC0] border-[#2F4BC0]/20 bg-[#2F4BC0]/5 backdrop-blur-md">
-            <Construction className="w-4 h-4 animate-bounce" />
-            Sección en Desarrollo
-          </div>
+                    <h3 className="text-xl font-extrabold text-white tracking-tight uppercase group-hover:text-white/95 transition-colors">
+                      {tier.title}
+                    </h3>
+                    <p className="text-[11px] font-bold uppercase tracking-wide" style={{ color: tier.accentColor }}>
+                      {tier.tagline}
+                    </p>
+                  </div>
 
-          {/* Textos */}
-          <div className="space-y-4 max-w-xl">
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white uppercase leading-tight">
-              Esta página está <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2F4BC0] to-[#00F2FE]">
-                en mantenimiento
-              </span>
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-400 font-light leading-relaxed">
-              Estamos trabajando para mejorar tu experiencia web. Gracias por tu paciencia.
-            </p>
-          </div>
+                  <p className="text-xs text-neutral-400 font-light leading-relaxed">
+                    {tier.description}
+                  </p>
 
-          {/* Acción */}
-          <div className="pt-2">
-            <button
-              onClick={() => setIsQuoteOpen(true)}
-              className="py-3.5 px-8 rounded-xl text-center text-xs font-black uppercase tracking-widest text-white bg-[#2F4BC0] border border-[#2F4BC0] hover:bg-[#2F4BC0]/95 hover:border-[#2F4BC0]/95 hover:shadow-[0_0_20px_rgba(47,75,192,0.4)] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <MessageCircle className="w-4.5 h-4.5" />
-              Cotizar Proyecto ↗
-            </button>
-          </div>
+                  {/* Tecnologías */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {tier.tech.map((t) => (
+                      <div 
+                        key={t}
+                        className="flex items-center gap-1.5 bg-neutral-900/60 border border-neutral-850 px-2.5 py-1 rounded-lg text-[9px] font-mono text-neutral-300 backdrop-blur-sm"
+                      >
+                        {getTechIcon(t)}
+                        <span>{t}</span>
+                      </div>
+                    ))}
+                  </div>
 
+                  {/* Listado de Características */}
+                  <div className="border-t border-neutral-900/80 pt-5 space-y-3">
+                    <h4 className="text-[10px] uppercase font-black tracking-widest text-neutral-500">
+                      ¿Qué incluye el desarrollo?
+                    </h4>
+                    <ul className="space-y-2.5">
+                      {tier.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5 text-xs text-neutral-300">
+                          <Check className="w-4 h-4 mt-0.5 shrink-0" style={{ color: tier.accentColor }} />
+                          <span className="leading-snug">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Botón de Acción */}
+                <div className="mt-8 pt-4">
+                  <button
+                    onClick={() => setIsQuoteOpen(true)}
+                    className="w-full py-3 px-4 rounded-xl text-center text-xs font-black uppercase tracking-widest border transition-all duration-300 flex items-center justify-center cursor-pointer text-white bg-neutral-900/30 border-neutral-800 hover:text-black"
+                    style={{
+                      '--hover-bg': tier.accentColor,
+                    } as React.CSSProperties}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = tier.accentColor;
+                      e.currentTarget.style.borderColor = tier.accentColor;
+                      e.currentTarget.style.color = '#000000';
+                      e.currentTarget.style.boxShadow = `0 0 15px ${tier.accentColor}40`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.borderColor = '#262626';
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    COTIZAR MODELO ↗
+                  </button>
+                </div>
+
+              </motion.article>
+            );
+          })}
         </div>
 
       </main>
@@ -169,7 +280,7 @@ export default function SaasPortfolioPage() {
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-[#2F4BC0]" />
-              Sistemas de Software a medida
+              Alta performance garantizada
             </span>
           </div>
         </div>

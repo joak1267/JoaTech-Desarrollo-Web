@@ -41,13 +41,26 @@ export default function Contact() {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     try {
-      // Simulación de llamada a API (1.5 segundos)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log('Datos enviados:', data);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          type: 'contacto',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error de servidor al enviar la consulta.');
+      }
+
       setIsSuccess(true);
       reset();
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
+      alert('Hubo un error al enviar tu consulta. Por favor, vuelve a intentarlo o comunícate directamente por WhatsApp.');
     } finally {
       setIsSubmitting(false);
     }
