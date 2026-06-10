@@ -24,9 +24,11 @@ export default function Hero({
   subtitle = "Creamos experiencias digitales premium, interactivas y optimizadas para potenciar tu marca. Integrando tecnologías de vanguardia para interfaces que marcan la diferencia."
 }: HeroProps) {
   const [wordIndex, setWordIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const isMobile = useIsMobile();
 
   useEffect(() => {
+    setMounted(true);
     const interval = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
     }, 2500);
@@ -37,7 +39,7 @@ export default function Hero({
     <section id="inicio" className="relative min-h-[90vh] flex flex-col justify-center items-center bg-neutral-950 px-6 py-24 overflow-hidden select-none">
       {/* 1. Fondo Animado Interactivo FloatingLines */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none bg-[#0b0a0d]">
-        {!isMobile ? (
+        {mounted && (
           <FloatingLines
             linesGradient={LINES_GRADIENT}
             animationSpeed={0.4}
@@ -47,8 +49,6 @@ export default function Hero({
             bendStrength={-0.8}
             mouseDamping={0.06}
           />
-        ) : (
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,75,192,0.12)_0%,transparent_70%)]" />
         )}
       </div>
 

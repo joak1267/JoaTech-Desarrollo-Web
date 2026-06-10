@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Hero from "@/components/sections/Hero";
 import Showcase from "@/components/sections/Showcase";
 import Works from "@/components/sections/Works";
@@ -21,7 +21,12 @@ const CHROME_BASE_COLOR: [number, number, number] = [0.015, 0.015, 0.025];
 
 export default function Home() {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <div className="bg-neutral-950 min-h-screen text-neutral-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white font-sans overflow-hidden relative">
@@ -38,22 +43,13 @@ export default function Home() {
         <div className="relative overflow-hidden bg-neutral-950">
           {/* Capa de Fluido WebGL con calibración ultra oscura para conservar contraste */}
           <div className="absolute inset-0 z-0 pointer-events-none opacity-60">
-            {!isMobile ? (
+            {mounted && (
               <LiquidChrome
                 baseColor={CHROME_BASE_COLOR}
                 speed={0.4}
                 amplitude={0.4}
                 interactive={true}
               />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 relative overflow-hidden pointer-events-none">
-                <div 
-                  className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                  }}
-                />
-              </div>
             )}
           </div>
           

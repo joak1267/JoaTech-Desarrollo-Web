@@ -295,11 +295,20 @@ export default function FloatingLines({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const isMobileBreakpoint = window.innerWidth < 768;
-      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
+      try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) {
+          setIsLowPerf(true);
+          return;
+        }
+      } catch (e) {
+        setIsLowPerf(true);
+        return;
+      }
       
-      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
+      const isUltraLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 2;
+      if (isUltraLowHardware) {
         setIsLowPerf(true);
       }
     }
@@ -333,9 +342,12 @@ export default function FloatingLines({
     return lineDistance[index] ?? 0.1;
   };
 
-  const topLineCount = enabledWaves.includes('top') ? getLineCount('top') : 0;
-  const middleLineCount = enabledWaves.includes('middle') ? getLineCount('middle') : 0;
-  const bottomLineCount = enabledWaves.includes('bottom') ? getLineCount('bottom') : 0;
+  const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+  const scaleLineCount = (count: number) => isMobile ? Math.max(2, Math.round(count * 0.4)) : count;
+
+  const topLineCount = enabledWaves.includes('top') ? scaleLineCount(getLineCount('top')) : 0;
+  const middleLineCount = enabledWaves.includes('middle') ? scaleLineCount(getLineCount('middle')) : 0;
+  const bottomLineCount = enabledWaves.includes('bottom') ? scaleLineCount(getLineCount('bottom')) : 0;
 
   const topLineDistance = enabledWaves.includes('top') ? getLineDistance('top') * 0.01 : 0.01;
   const middleLineDistance = enabledWaves.includes('middle') ? getLineDistance('middle') * 0.01 : 0.01;
@@ -360,30 +372,21 @@ export default function FloatingLines({
   const bottomWaveRotate = bottomWavePosition?.rotate ?? -1.0;
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const isMobileBreakpoint = window.innerWidth < 768;
-      const isMobileUA = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      const isLowHardware = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4;
-      
-      if (isMobileBreakpoint || isMobileUA || (isLowHardware && ('ontouchstart' in window || navigator.maxTouchPoints > 0))) {
-        return;
-      }
-    }
-
     if (isLowPerf) return;
 
     const container = containerRef.current;
     if (!container) return;
 
-    const isInteractive = interactive && typeof window !== 'undefined' && window.innerWidth > 768;
+    const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+    const isInteractive = interactive && typeof window !== 'undefined' && !isMobileDevice;
 
     // Initialize Three.js scene with orthographic camera for 2D rendering
     const scene = new Scene();
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
     camera.position.z = 1;
 
-    const renderer = new WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new WebGLRenderer({ antialias: !isMobileDevice, alpha: false });
+    renderer.setPixelRatio(isMobileDevice ? 0.75 : Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     container.appendChild(renderer.domElement);
@@ -563,25 +566,25 @@ export default function FloatingLines({
     };
   }, [isLowPerf]);
 
-  if (isLowPerf) {
-    return (
-      <div
-        className="relative w-full h-full overflow-hidden bg-[#0b0a0d]"
-        style={{ position: 'relative' }}
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,75,192,0.12)_0%,transparent_70%)]" />
-      </div>
-    );
-  }
-
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden "
+      className={`relative w-full h-full overflow-hidden ${isLowPerf ? 'bg-[#0b0a0d]' : ''}`}
       style={{
         mixBlendMode: mixBlendMode,
         position: 'relative'
       }}
-    />
+    >
+      {isLowPerf && (
+        <div className="absolute inset-0 w-full h-full overflow-hidden bg-[#0b0a0d] pointer-events-none">
+          {/* Orbe Azul Electrico Flotante */}
+          <div className="absolute w-[280px] h-[280px] rounded-full bg-blue-600/20 blur-[80px] -left-12 top-[10%] animate-float-blue" />
+          {/* Orbe Fucsia/Rosa Flotante */}
+          <div className="absolute w-[240px] h-[240px] rounded-full bg-fuchsia-500/20 blur-[75px] -right-12 bottom-[20%] animate-float-pink" />
+          {/* Destello central de atmosfera */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(47,75,192,0.08)_0%,transparent_70%)]" />
+        </div>
+      )}
+    </div>
   );
 }
