@@ -168,7 +168,7 @@ const PROJECTS_DATA: Project[] = [
     ],
     tech: ['React 19', 'Vite', 'Tailwind CSS', 'WhatsApp API'],
     status: 'live',
-    demoUrl: 'https://github.com/joak1267/peluqueria-Demo.git',
+    demoUrl: 'https://peluqueria-demo-phi.vercel.app/',
     accentColor: '#c5a880',
     glowColor: 'rgba(197, 168, 128, 0.4)',
     icon: Scissors,
