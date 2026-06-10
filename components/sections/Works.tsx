@@ -14,7 +14,8 @@ import {
   Check, 
   ExternalLink,
   Hourglass,
-  Sparkles
+  Sparkles,
+  Scissors
 } from 'lucide-react';
 
 import dynamic from 'next/dynamic';
@@ -151,6 +152,27 @@ const PROJECTS_DATA: Project[] = [
     icon: Globe,
     img: '/ecommerce/express_shop.png',
     logoUrl: '/logo_nike.svg'
+  },
+  {
+    id: 'peluqueria-demo',
+    title: 'Peluqueria Demo',
+    category: 'web',
+    categoryLabel: 'Turnero & Barber Shop',
+    tagline: 'Terminal de Turnos Online y Catálogo de Estilos',
+    description: 'Aplicación web premium para peluquerías y barberías con un sistema de reservas dinámico mediante acordeón inteligente y catálogo de cortes interactivo integrado con WhatsApp.',
+    features: [
+      'Menú interactivo de reserva de turnos en 4 etapas consolidado',
+      'Lookbook / Catálogo de estilos con opción de reserva directa de look',
+      'Selección de estilista personalizado y calendario interactivo mensual',
+      'Integración nativa para confirmaciones instantáneas por WhatsApp API'
+    ],
+    tech: ['React 19', 'Vite', 'Tailwind CSS', 'WhatsApp API'],
+    status: 'live',
+    demoUrl: 'https://github.com/joak1267/peluqueria-Demo.git',
+    accentColor: '#c5a880',
+    glowColor: 'rgba(197, 168, 128, 0.4)',
+    icon: Scissors,
+    img: '/landings/spa_hero.jpg'
   }
 ];
 
